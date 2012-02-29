@@ -3,14 +3,11 @@
 //  Restaurant
 //
 //  Created by Eric D'Souza on 12-02-28.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Eric D'Souza. All rights reserved.
 //
 
 #import "RestaurantAppDelegate.h"
-
-#import "RestaurantFirstViewController.h"
-
-#import "RestaurantSecondViewController.h"
+#import "GlobalFunctions.h"
 
 @implementation RestaurantAppDelegate
 
@@ -20,11 +17,21 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
-    UIViewController *viewController1 = [[RestaurantFirstViewController alloc] initWithNibName:@"RestaurantFirstViewController" bundle:nil];
-    UIViewController *viewController2 = [[RestaurantSecondViewController alloc] initWithNibName:@"RestaurantSecondViewController" bundle:nil];
+    
+    // the black status bar looks better with the app
+    [application setStatusBarStyle:UIStatusBarStyleBlackOpaque];  
+    
+    // instantiate the Singleton Class
+    sharedData = [SingletonClass sharedDataInstance]; 
+    
+    // maintain state in case app / device was restarted
+    if ([GlobalFunctions archivedAppDataExists])
+        [GlobalFunctions unarchiveAppData];
+    
+    // init tabBarController
     self.tabBarController = [[UITabBarController alloc] init];
-    self.tabBarController.viewControllers = [NSArray arrayWithObjects:viewController1, viewController2, nil];
+    self.tabBarController.viewControllers = [GlobalFunctions createTabBarControllers];
+    
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;
